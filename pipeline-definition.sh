@@ -11,11 +11,8 @@ while true; do
 done
 echo "$config $owner $branch $poll $config $jsonsource"
 		
-#jq.pipeline.version += 1 | del(.metadata) | .pipeline.stages[] |= if (.name=="Source") then (.actions[].configuration.Branch = "$branch" | .actions[].configuration.Owner = "bbb" | .actions[].configuration.PollForSourceChanges = "ccc" ) else . end)
-
-cat "$jsonsource" jq '.pipeline.version += 1 | del(.metadata)' > tmp.pipe.json
-mv tmp.pipe.json "$jsonsource"
-cat "$jsonsource" | jq --arg owner "$owner" --arg branch "$branch" --arg owner "$owner" --arg poll "$poll" .pipeline.stages[] |= if (.name=="Source") then (.actions[].configuration.Branch = "$branch" | .actions[].configuration.Owner = "$owner" | .actions[].configuration.PollForSourceChanges = "$poll" ) else . end)  > tmp.pipe.json
-mv tmp.pipe.json "$jsonsource"
-
+jq '.pipeline.version += 1 | del(.metadata)' "$jsonsource"> tmp.pipe.json
+mv tmp.pipe.json "$jsonsource"1
+jq --arg owner "$owner" --arg branch "$branch" --arg owner "$owner" --arg poll "$poll" '.pipeline.stages[] |= if (.name== "Source" ) then (.actions[].configuration.Branch = $branch | .actions[].configuration.Owner = $owner | .actions[].configuration.PollForSourceChanges = $poll ) else . end' "$jsonsource" > tmp.pipe.json
+mv tmp.pipe.json "$jsonsource"1
 
